@@ -1,5 +1,10 @@
 # Kagi FastGPT CLI
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/bcspragu/kagi?status.svg)](https://pkg.go.dev/github.com/bcspragu/kagi?tab=doc)
+[![CI Workflow](https://github.com/bcspragu/kagi/actions/workflows/test.yml/badge.svg)](https://github.com/bcspragu/kagi/actions?query=branch%3Amain)
+
+
+
 `kagi` is a quick-and-dirty CLI for querying the [Kagi search engine](https://kagi.com/) with their [FastGPT API](https://help.kagi.com/kagi/api/fastgpt.html)
 
 ## Installation
