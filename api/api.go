@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -48,7 +48,7 @@ type FastGPTResponseReference struct {
 type FastGPTResponseError struct {
 	Code    int    `json:"code"`
 	Message string `json:"msg"`
-	// There's also "ref", but it was null so I don't know its type>
+	// There's also "ref", but it was null so I don't know its type.
 }
 
 type FastGPTRequest struct {
@@ -74,7 +74,8 @@ func (c *Client) QueryFastGPT(query string) (*FastGPTResponse, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
+		// Best-effort read the response body.
+		body, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("unexpected status code %d, body %q", resp.StatusCode, string(body))
 	}
 
