@@ -26,8 +26,6 @@ func run(args []string) error {
 	default:
 		query = strings.Join(args[1:], " ")
 	}
-	if len(args) < 2 {
-	}
 	apiKey := os.Getenv("KAGI_API_KEY")
 	if apiKey == "" {
 		return errors.New("no KAGI_API_KEY was set")
