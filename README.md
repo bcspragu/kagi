@@ -5,7 +5,7 @@
 
 
 
-`kagi` is a quick-and-dirty CLI for querying the [Kagi search engine](https://kagi.com/) with their [FastGPT API](https://help.kagi.com/kagi/api/fastgpt.html)
+`kagi` is a simple CLI for querying the [Kagi search engine](https://kagi.com/) with their [FastGPT API](https://help.kagi.com/kagi/api/fastgpt.html)
 
 ## Installation
 
@@ -21,9 +21,20 @@ Then, create an API key + add API credits, following [the official Kagi instruct
 export KAGI_API_KEY=...
 ```
 
-And you should be good to go! Try running `kagi <query>` to test it out.
+If you don't want to expose sensitive credentials to all applications running in your shell, you can wrap the `kagi` CLI in a shell script, e.g.:
 
-As an aside, I'm **really** not a fan of storing sensitive credentials in accessible-to-everything-all-the-time environment variables, and if anyone has a good + ergonomic alternative (e.g. involving `pass` or credential helpers), I'm all ears.
+```bash
+#!/bin/bash
+
+# Maybe this lives in ~/.local/bin, which has a higher precedence than your $GOPATH/bin dir
+
+KAGI_API_KEY=$(some CLI password manager or just hardcode it) $GOPATH/bin/kagi "$@"
+
+# or, if you prefer flags:
+# $GOPATH/bin/kagi --kagi_api_key=... "$@"
+```
+
+And you should be good to go! Try running `kagi <query>` to test it out.
 
 ## Example Output
 

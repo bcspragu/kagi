@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -16,22 +17,30 @@ func main() {
 	}
 }
 
+var errUsage = errors.New("usage: kagi <query>")
+
 func run(args []string) error {
-	var query string
-	switch len(args) {
-	case 0, 1:
-		return errors.New("usage: kagi <query>")
-	case 2:
-		query = args[1]
-	default:
-		query = strings.Join(args[1:], " ")
+	if len(args) == 0 {
+		return errUsage
 	}
-	apiKey := os.Getenv("KAGI_API_KEY")
-	if apiKey == "" {
-		return errors.New("no KAGI_API_KEY was set")
+	fs := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	var (
+		kagiAPIKey = fs.String("kagi_api_key", os.Getenv("KAGI_API_KEY"), "API key to use with the Kagi FastGPT API")
+	)
+	if err := fs.Parse(args[1:]); err != nil {
+		return fmt.Errorf("failed to parse flags: %w", err)
+	}
+	if *kagiAPIKey == "" {
+		return errors.New("no KAGI_API_KEY env var or --kagi_api_key flag was set")
 	}
 
-	client := api.NewClient(apiKey)
+	fArgs := fs.Args()
+	if len(fArgs) == 0 {
+		return errUsage
+	}
+	query := strings.Join(fArgs, " ")
+
+	client := api.NewClient(*kagiAPIKey)
 
 	resp, err := client.QueryFastGPT(query)
 	if err != nil {
