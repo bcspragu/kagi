@@ -53,26 +53,22 @@ func run(args []string) error {
 	return nil
 }
 
-func respond(resp *api.FastGPTResponse, query string) string {
-	answer := resp.Data.Output
+func respond(resp *api.FastGPTResponse, query string) (response string) {
 	// remove all repeated newlines or empty lines from the output
-	answer = strings.ReplaceAll(answer, "\n\n", "\n")
+  answer := strings.ReplaceAll(resp.Data.Output, "\n\n", "\n")
 
-	fmt.Println("# " + query)
-	fmt.Println(answer)
+  response = "# " + query + "\n" + answer + "\n"
 
 	// If there are no references, return early
 	if len(resp.Data.References) == 0 {
-		return answer
+		return
 	}
 
-	fmt.Println()
-	fmt.Println("# References")
-	fmt.Println()
+  response += "\n# References\n"
 
 	for i, ref := range resp.Data.References {
-		fmt.Printf("%d. %s - %s  - %s\n", i+1, ref.Title, ref.Link, ref.Snippet)
+    response += fmt.Sprintf("%d. %s - %s  - %s\n", i+1, ref.Title, ref.Link, ref.Snippet)
 	}
 
-	return answer
+	return
 }
