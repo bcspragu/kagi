@@ -47,16 +47,28 @@ func run(args []string) error {
 		return fmt.Errorf("error performing query: %w", err)
 	}
 
-	fmt.Println("===== OUTPUT =====")
-	fmt.Println()
-	fmt.Println(resp.Data.Output)
-	fmt.Println()
-	fmt.Println("===== REFERENCES =====")
-	fmt.Println()
-
-	for i, ref := range resp.Data.References {
-		fmt.Printf("%d. %s - %s\n  - %s\n\n", i+1, ref.Title, ref.Link, ref.Snippet)
-	}
+	response := respond(resp, query)
+	fmt.Print(response)
 
 	return nil
+}
+
+func respond(resp *api.FastGPTResponse, query string) (response string) {
+	// remove all repeated newlines or empty lines from the output
+  answer := strings.ReplaceAll(resp.Data.Output, "\n\n", "\n")
+
+  response = "# " + query + "\n" + answer + "\n"
+
+	// If there are no references, return early
+	if len(resp.Data.References) == 0 {
+		return
+	}
+
+  response += "\n# References\n"
+
+	for i, ref := range resp.Data.References {
+    response += fmt.Sprintf("%d. %s - %s  - %s\n", i+1, ref.Title, ref.Link, ref.Snippet)
+	}
+
+	return
 }
